@@ -8,13 +8,16 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
+  const unlockTime = currentTimestampInSeconds + 60;
 
-  console.log("Deploying contracts with the account:", deployer.address);
+  const time = 200;
 
-  const ethylene = await ethers.deployContract("Ethylene");
+  const contract = await ethers.deployContract("Ethylene", ["0x7EeBF5cCe9911765C6a9478aB9251f92f30Ff4db", 200]);
 
-  console.log("Token address:", await ethylene.address);
+  await contract.waitForDeployment();
+
+  console.log("Coken address:", await contract.address);
 }
 
 main()
