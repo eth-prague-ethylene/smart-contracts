@@ -32,7 +32,7 @@ contract Ethylene is Ownable {
      * @param claim the truth claim being asserted. This is an assertion about the world, and is verified by disputers.
      * @return assertionId unique identifier for this assertion.
      */
-    function assertTruth(bytes memory claim) public returns (bytes32) {
+    function assertToOracle(bytes memory claim) public returns (bytes32) {
         bytes32 assertionId = _oov3.assertTruth(
             claim,
             address(this), // asserter

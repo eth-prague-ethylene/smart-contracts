@@ -1,10 +1,10 @@
-import { BigNumber, Signer } from "ethers";
-import { CERC20 } from "../typechain-types/index";
-import CERC20Artifact from "../artifacts/contracts/CERC20.sol/CERC20.json";
-import { ethers, waffle } from "hardhat";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
-import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { BigNumber, Signer } from 'ethers';
+import { Ethylene } from '../typechain-types/index';
+import EthyleneArtifact from '../artifacts/contracts/Ethylene.sol/Ethylene.json';
+import { ethers, waffle } from 'hardhat';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 const { deployContract } = waffle;
 const { expect } = chai;
@@ -12,31 +12,46 @@ chai.use(chaiAsPromised);
 let user: SignerWithAddress;
 let contractOwner: SignerWithAddress;
 let random: SignerWithAddress;
-let CERC20: CERC20;
+let Ethylene: Ethylene;
 
-describe("Initialization of core functions", function () {
+const DEFAULT_CURRENCY = '0x07865c6e87b9f70255377e024ace6630c1eaa37f'; //USDC GOERLI
+const DEFAULT_LIVENESS = 300;
+const CLAIM = 'I just planted 10 trees on';
+
+function stringToBytes(input: string): Uint8Array {
+  const encoder = new TextEncoder();
+  return encoder.encode(input);
+}
+
+describe('Initialization of core functions', function () {
   beforeEach(async function () {
     [user, contractOwner] = await ethers.getSigners();
 
-    CERC20 = (await deployContract(contractOwner, CERC20Artifact)) as CERC20;
-
-    CERC20 = (await deployContract(contractOwner, CERC20Artifact)) as CERC20;
+    Ethylene = (await deployContract(contractOwner, EthyleneArtifact, [
+      DEFAULT_CURRENCY,
+      DEFAULT_LIVENESS,
+    ])) as Ethylene;
   });
 
-  describe("ForeverPP Contract", function () {
-    describe("General Stuff", function () {
-      it("should have proper owner", async function () {
-        expect(await CERC20.owner()).to.equal(contractOwner.address);
+  describe('Ethylene Contract', function () {
+    describe('General Stuff', function () {
+      it('should have proper owner', async function () {
+        expect(await Ethylene.owner()).to.equal(contractOwner.address);
       });
-      it("should have proper name", async function () {
-        expect(await CERC20.name()).to.equal("Custom ERC20");
+      it('should have proper default currency address', async function () {
+        expect((await Ethylene.defaultCurrency()).toLowerCase()).to.equal(
+          DEFAULT_CURRENCY
+        );
       });
-      it("should have proper symbol", async function () {
-        expect(await CERC20.symbol()).to.equal("CERC20");
+      it('should have proper default liveness', async function () {
+        expect(await Ethylene.defaultLiveness()).to.equal(DEFAULT_LIVENESS);
       });
-
-      it("should support ERC20 interface", async function () {
-        expect(await CERC20.supportsInterface("0x01ffc9a7")).to.equal(true);
+    });
+    describe('Oracle Interactions', function () {
+      it('should be able to assert to oracle', async function () {
+        const bytes = stringToBytes('adasds');
+        // const id = await Ethylene.assertToOracle(bytes);
+        console.log(await (await Ethylene.assertToOracle(bytes)).wait());
       });
     });
   });
