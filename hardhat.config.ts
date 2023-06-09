@@ -36,8 +36,20 @@ module.exports = {
     //   url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_API_KEY}`,
     //   // accounts: [process.env.PRIVATE_KEY]
     // },
+    mumbai: {
+      url: `https://rpc.eu-north-1.gateway.fm/v4/polygon/non-archival/mumbai`,
+      accounts: [process.env.PRIVATE_KEY],
+    },
     scroll: {
       url: 'https://alpha-rpc.scroll.io/l2' || '',
+      accounts: [process.env.PRIVATE_KEY],
+    },
+    taiko: {
+      url: 'http://rpc.test.taiko.xyz',
+      accounts: [process.env.PRIVATE_KEY],
+    },
+    mantle: {
+      url: 'https://rpc.testnet.mantle.xyz',
       accounts: [process.env.PRIVATE_KEY],
     },
   },
@@ -52,6 +64,14 @@ module.exports = {
         urls: {
           apiURL: 'https://blockscout.scroll.io/api',
           browserURL: 'https://blockscout.scroll.io/',
+        },
+      },
+      {
+        network: 'taiko',
+        chainId: 167005,
+        urls: {
+          apiURL: 'https://explorer.test.taiko.xyz/api',
+          browserURL: 'https://explorer.test.taiko.xyz',
         },
       },
     ],
