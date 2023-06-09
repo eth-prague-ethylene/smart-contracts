@@ -32,11 +32,7 @@ module.exports = {
         url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       },
     },
-    // mumbai: {
-    //   url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_API_KEY}`,
-    //   // accounts: [process.env.PRIVATE_KEY]
-    // },
-    mumbai: {
+    polygonMumbai: {
       url: `https://rpc.eu-north-1.gateway.fm/v4/polygon/non-archival/mumbai`,
       accounts: [process.env.PRIVATE_KEY],
     },
@@ -55,7 +51,9 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      scrollAlpha: 'abc',
+      scroll: 'abc',
+      polygonMumbai: '7V4UBHQJT1G7TIWHKFQ2VU5RMG3U8KYSCB',
+      mantle: '266e97a3-6b1b-45b9-8c48-ac9888f6786b'
     },
     customChains: [
       {
@@ -72,6 +70,14 @@ module.exports = {
         urls: {
           apiURL: 'https://explorer.test.taiko.xyz/api',
           browserURL: 'https://explorer.test.taiko.xyz',
+        },
+      },
+      {
+        network: 'mantle',
+        chainId: 5001,
+        urls: {
+          apiURL: 'https://explorer.testnet.mantle.xyz/api',
+          browserURL: 'https://explorer.testnet.mantle.xyz',
         },
       },
     ],
