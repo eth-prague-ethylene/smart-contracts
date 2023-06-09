@@ -3,8 +3,9 @@ import '@typechain/hardhat';
 import '@nomiclabs/hardhat-etherscan';
 import 'hardhat-gas-reporter';
 import { config } from 'dotenv';
-config({ path: '../../.env' });
+config({ path: '.env' });
 
+console.log(process.env.PRIVATE_KEY)
 module.exports = {
   gasReporter: {
     currency: 'USD',
@@ -14,7 +15,7 @@ module.exports = {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   solidity: {
-    version: '0.8.19',
+    version: '0.8.16',
     settings: {
       optimizer: {
         enabled: true,
@@ -25,5 +26,31 @@ module.exports = {
   typechain: {
     outDir: 'typechain-types',
     target: 'ethers-v5',
+  },
+  networks: {
+    // mumbai: {
+    //   url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_API_KEY}`,
+    //   // accounts: [process.env.PRIVATE_KEY]
+    // },
+    scroll: {
+      url: 'https://alpha-rpc.scroll.io/l2' || '',
+      accounts:
+        [process.env.PRIVATE_KEY],
+    },
+  },
+  etherscan: {
+    apiKey: {
+      scrollAlpha: 'abc',
+    },
+    customChains: [
+      {
+        network: 'scroll',
+        chainId: 534353,
+        urls: {
+          apiURL: 'https://blockscout.scroll.io/api',
+          browserURL: 'https://blockscout.scroll.io/',
+        },
+      },
+    ],
   },
 };

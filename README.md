@@ -11,3 +11,8 @@ GAS_REPORT=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.ts
 ```
+
+
+# Deployment contracts
+Scroll Alpha testnet: https://blockscout.scroll.io/address/0x7EeBF5cCe9911765C6a9478aB9251f92f30Ff4db
+
