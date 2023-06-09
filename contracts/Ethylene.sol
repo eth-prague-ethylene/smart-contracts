@@ -1,67 +1,55 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-pragma solidity ^0.8.14;
 
-import "@uma/core/contracts/oracle/interfaces/OptimisticOracleV2Interface.sol";
+pragma solidity ^0.8.16;
 
-// *************************************
-// *   Minimum Viable OO Intergration  *
-// *************************************
+import "@uma/core/contracts/optimistic-oracle-v3/interfaces/OptimisticOracleV3Interface.sol";
 
-// This contract shows how to get up and running as quickly as posible with UMA's Optimistic Oracle.
-// We make a simple price request to the OO and return it to the user.
+// ***************************************
+// *    Minimum Viable OOV3 Integration  *
+// ***************************************
 
-contract Ethylene {
-    // Create an Optimistic oracle instance at the deployed address on Görli.
-    OptimisticOracleV2Interface oo =
-        OptimisticOracleV2Interface(0xA5B9d8a0B0Fa04Ba71BDD68069661ED5C0848884);
+// This contract shows how to get up and running as quickly as possible with UMA's Optimistic Oracle V3.
+// We make a simple data assertion about the real world and let the OOV3 arbitrate the outcome.
 
-    // Use the yes no idetifier to ask arbitary questions, such as the weather on a particular day.
-    bytes32 identifier = bytes32("YES_OR_NO_QUERY");
+contract OOV3_GettingStarted {
+    // Create an Optimistic Oracle V3 instance at the deployed address on Görli.
+    OptimisticOracleV3Interface oov3 =
+        OptimisticOracleV3Interface(0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB);
 
-    // Post the question in ancillary data. Note that this is a simplified form of ancillry data to work as an example. A real
-    // world prodition market would use something slightly more complex and would need to conform to a more robust structure.
-    bytes ancillaryData =
-        bytes(
-            "Q:Did the temperature on the 25th of July 2022 in Manhattan NY exceed 35c? A:1 for yes. 0 for no."
+    // Asserted claim. This is some truth statement about the world and can be verified by the network of disputers.
+    bytes public assertedClaim =
+        bytes("Argentina won the 2022 Fifa world cup in Qatar");
+
+    // Each assertion has an associated assertionID that uniquly identifies the assertion. We will store this here.
+    bytes32 public assertionId;
+
+    // Assert the truth against the Optimistic Asserter. This uses the assertion with defaults method which defaults
+    // all values, such as a) challenge window to 120 seconds (2 mins), b) identifier to ASSERT_TRUTH, c) bond currency
+    //  to USDC and c) and default bond size to 0 (which means we dont need to worry about approvals in this example).
+    function assertTruth() public {
+        assertionId = oov3.assertTruthWithDefaults(
+            assertedClaim,
+            address(this)
         );
-
-    uint256 requestTime = 0; // Store the request time so we can re-use it later.
-
-    // Submit a data request to the Optimistic oracle.
-    function requestData() public {
-        requestTime = block.timestamp; // Set the request time to the current block time.
-        IERC20 bondCurrency = IERC20(
-            0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6
-        ); // Use Görli WETH as the bond currency.
-        uint256 reward = 0; // Set the reward to 0 (so we dont have to fund it from this contract).
-
-        // Now, make the price request to the Optimistic oracle and set the liveness to 30 so it will settle quickly.
-        oo.requestPrice(
-            identifier,
-            requestTime,
-            ancillaryData,
-            bondCurrency,
-            reward
-        );
-        oo.setCustomLiveness(identifier, requestTime, ancillaryData, 30);
     }
 
-    // Settle the request once it's gone through the liveness period of 30 seconds. This acts the finalize the voted on price.
-    // In a real world use of the Optimistic Oracle this should be longer to give time to disputers to catch bat price proposals.
-    function settleRequest() public {
-        oo.settle(address(this), identifier, requestTime, ancillaryData);
+    // Settle the assertion, if it has not been disputed and it has passed the challenge window, and return the result.
+    // result
+    function settleAndGetAssertionResult() public returns (bool) {
+        return oov3.settleAndGetAssertionResult(assertionId);
     }
 
-    // Fetch the resolved price from the Optimistic Oracle that was settled.
-    function getSettledData() public view returns (int256) {
-        return
-            oo
-                .getRequest(
-                    address(this),
-                    identifier,
-                    requestTime,
-                    ancillaryData
-                )
-                .resolvedPrice;
+    // Just return the assertion result. Can only be called once the assertion has been settled.
+    function getAssertionResult() public view returns (bool) {
+        return oov3.getAssertionResult(assertionId);
+    }
+
+    // Return the full assertion object contain all information associated with the assertion. Can be called any time.
+    function getAssertion()
+        public
+        view
+        returns (OptimisticOracleV3Interface.Assertion memory)
+    {
+        return oov3.getAssertion(assertionId);
     }
 }
