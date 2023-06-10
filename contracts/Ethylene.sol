@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Ethylene is Ownable {
     OptimisticOracleV3Interface private constant _oov3 =
-        OptimisticOracleV3Interface(0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB); // GOERLI
+        OptimisticOracleV3Interface(0x382Eb37a27Ee60B9C43Fce24949e383A4718177B); // MUMBAI sandbox
+        // OptimisticOracleV3Interface(0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB); // GOERLI
     uint64 public defaultLiveness;
     IERC20 public defaultCurrency;
     bytes32 private constant defaultIdentifier = "ASSERT_TRUTH";
