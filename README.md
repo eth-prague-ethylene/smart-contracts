@@ -18,6 +18,7 @@ Polygon Mumbai testnet: https://mumbai.polygonscan.com/address/0x7807A8d0fD161b0
 Optimism mainnet: https://optimistic.etherscan.io/address/0x7364861986cbf3474acfbb7139695f9cb6ed1f1e
 Scroll Alpha testnet: https://blockscout.scroll.io/address/0x04b3786899D4400bBEf2f000c07CBB916a9a8E24#code
 Mantle testnet: https://explorer.testnet.mantle.xyz/address/0xE57bae05b7568E1b2b03104bD171ab94F54BcbFE#code
+Taiko testnet: https://explorer.test.taiko.xyz/address/0x8FDDf2Fe177d16C2783b1F52dc71ABbc4366977B
 
 # Sandboxed UMA V3 oracle:
   Deployed Finder at 0xa7568E44Ae1f4B44279eaaC20c8F1f82b039711E
