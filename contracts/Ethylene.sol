@@ -4,13 +4,15 @@ pragma solidity ^0.8.16;
 
 import "@uma/core/contracts/optimistic-oracle-v3/interfaces/OptimisticOracleV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 contract Ethylene is Ownable {
-    OptimisticOracleV3Interface private constant _oov3 =
-        OptimisticOracleV3Interface(0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB); // GOERLI
+    OptimisticOracleV3Interface private immutable _oov3;
     uint64 public defaultLiveness;
     IERC20 public defaultCurrency;
-    bytes32 private constant defaultIdentifier = "ASSERT_TRUTH";
+    bytes32 private constant _defaultIdentifier = "ASSERT_TRUTH";
+
+    mapping(bytes => bytes32) private _assertionIdByLensPostId;
 
     // ========================================
     //     CONSTRUCTOR AND CORE FUNCTIONS
@@ -20,69 +22,82 @@ contract Ethylene is Ownable {
      * @notice Constructs the Ethylene contract.
      * @param _currency the currency to use for assertions.
      * @param _liveness the liveness to use for assertions.
+     * @param __oov3 the address of the OptimisticOracleV3 contract.
      */
-    constructor(IERC20 _currency, uint64 _liveness) {
+    constructor(IERC20 _currency, uint64 _liveness, address __oov3) {
         defaultCurrency = _currency;
         defaultLiveness = _liveness;
+        _oov3 = OptimisticOracleV3Interface(__oov3);
     }
 
     /**
      * @notice Asserts a truth about the world, using a fully custom configuration.
      * @dev The caller must approve this contract to spend at least bond amount of currency.
-     * @param claim the truth claim being asserted. This is an assertion about the world, and is verified by disputers.
-     * @return assertionId unique identifier for this assertion.
+     * @param _claim the truth claim being asserted. This is an assertion about the world, and is verified by disputers.
+     * @param _lensPostId the lens post id that the claim is being asserted about.
      */
-    function assertToOracle(bytes memory claim) public returns (bytes32) {
+    function assertToOracle(
+        bytes calldata _claim,
+        bytes calldata _lensPostId
+    ) public {
         bytes32 assertionId = _oov3.assertTruth(
-            claim,
+            createFinalClaim(_claim, _lensPostId),
             address(this), // asserter
             address(0), // callbackRecipient
             address(0), // escalationManager
             defaultLiveness,
             defaultCurrency,
-            _oov3.getMinimumBond(address(defaultCurrency)),
-            defaultIdentifier,
+            0, // TODO: CHANGE LATER
+            _defaultIdentifier,
             bytes32(0) // domainId
         );
 
-        return assertionId;
+        _assertionIdByLensPostId[_lensPostId] = assertionId;
     }
 
     /**
      * @notice Settles the assertion, if it has not been disputed and it has passed the challenge window, and return the result.
-     * @param _assertionId the unique identifier for the assertion.
+     * @param _lensPostId the lens post id that the claim is being asserted about.
      * @dev This function can only be called once the assertion has been settled, otherwise it reverts.
-     * @return result the result of the assertion.
      */
-    function settleAndGetAssertionResult(
-        bytes32 _assertionId
-    ) public returns (bool) {
-        return _oov3.settleAndGetAssertionResult(_assertionId);
+    function settleAssertion(bytes calldata _lensPostId) external {
+        _oov3.settleAssertion(getAssertionIdByLensPostId(_lensPostId));
     }
 
-    // Just return the assertion result. Can only be called once the assertion has been settled.
     /**
      * @notice Returns the result of the assertion.
-     * @param _assertionId the unique identifier for the assertion.
+     * @param _lensPostId the lens post id that the claim is being asserted about.
      * @dev This function can only be called once the assertion has been settled, otherwise it reverts.
-     * @return result the result of the assertion.
+     * @return result the result of the assertion (true/false).
      */
     function getAssertionResult(
-        bytes32 _assertionId
+        bytes calldata _lensPostId
     ) public view returns (bool) {
-        return _oov3.getAssertionResult(_assertionId);
+        return
+            _oov3.getAssertionResult(getAssertionIdByLensPostId(_lensPostId));
     }
 
     /**
      * @notice Returns the full assertion object contain all information associated with the assertion.
-     * @param _assertionId the unique identifier for the assertion.
+     * @param _lensPostId the lens post id that the claim is being asserted about.
      * @dev This function can be called any time, it won't revert if assertion has not been settled.
      * @return assertion the full assertion object.
      */
-    function getAssertion(
-        bytes32 _assertionId
+    function getAssertionData(
+        bytes calldata _lensPostId
     ) public view returns (OptimisticOracleV3Interface.Assertion memory) {
-        return _oov3.getAssertion(_assertionId);
+        return _oov3.getAssertion(getAssertionIdByLensPostId(_lensPostId));
+    }
+
+    /**
+     * @notice Returns the assertion id for a given lens post id.
+     * @param _lensPostId the lens post id that the claim is being asserted about.
+     * @return assertionId the id of the assertion.
+     */
+    function getAssertionIdByLensPostId(
+        bytes calldata _lensPostId
+    ) public view returns (bytes32) {
+        return _assertionIdByLensPostId[_lensPostId];
     }
 
     // ========================================
@@ -105,5 +120,71 @@ contract Ethylene is Ownable {
      */
     function setDefaultLiveness(uint64 _liveness) external onlyOwner {
         defaultLiveness = _liveness;
+    }
+
+    // ========================================
+    //     HELPER FUNCTIONS
+    // ========================================
+
+    function createFinalClaim(
+        bytes calldata claim,
+        bytes calldata lensPostId
+    ) private pure returns (bytes memory) {
+        bytes memory mergedBytes = new bytes(claim.length + lensPostId.length);
+        uint256 i;
+
+        for (i = 0; i < claim.length; ) {
+            mergedBytes[i] = claim[i];
+            unchecked {
+                ++i;
+            }
+        }
+
+        for (uint256 j = 0; j < lensPostId.length; ) {
+            mergedBytes[i + j] = lensPostId[j];
+            unchecked {
+                ++j;
+            }
+        }
+
+        return mergedBytes;
+    }
+
+    function createFinalClaimAssembly(
+        bytes memory claim,
+        bytes memory lensPostId
+    ) private pure returns (bytes memory) {
+        bytes memory mergedBytes = new bytes(claim.length + lensPostId.length);
+
+        assembly {
+            let length1 := mload(claim)
+            let length2 := mload(lensPostId)
+            let dest := add(mergedBytes, 32) // Skip over the length field of the dynamic array
+
+            // Copy claim to mergedBytes
+            for {
+                let i := 0
+            } lt(i, length1) {
+                i := add(i, 32)
+            } {
+                mstore(add(dest, i), mload(add(claim, add(32, i))))
+            }
+
+            // Copy lensPostId to mergedBytes
+            for {
+                let i := 0
+            } lt(i, length2) {
+                i := add(i, 32)
+            } {
+                mstore(
+                    add(dest, add(length1, i)),
+                    mload(add(lensPostId, add(32, i)))
+                )
+            }
+
+            mstore(mergedBytes, add(length1, length2))
+        }
+
+        return mergedBytes;
     }
 }

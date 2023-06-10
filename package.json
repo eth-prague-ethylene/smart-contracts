@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@uma/core": "^2.55.0",
-    "dotenv": "^16.0.2"
+    "dotenv": "^16.0.2",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
@@ -19,7 +20,7 @@
     "@typechain/ethers-v5": "^10.0.0",
     "@typechain/hardhat": "^6.0.0",
     "@types/chai": "^4.3.1",
-    "@ffypes/chai-as-promised": "^7.1.5",
+    "@types/chai-as-promised": "^7.1.5",
     "@types/fs-extra": "^9.0.13",
     "@types/mocha": "^9.1.1",
     "chai": "^4.3.6",
