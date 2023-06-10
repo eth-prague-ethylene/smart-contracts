@@ -29,7 +29,7 @@ module.exports = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+        url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.MUMBAI_API_KEY}`,
       },
     },
     polygonMumbai: {
@@ -53,7 +53,7 @@ module.exports = {
     apiKey: {
       scroll: 'abc',
       polygonMumbai: '7V4UBHQJT1G7TIWHKFQ2VU5RMG3U8KYSCB',
-      mantle: '266e97a3-6b1b-45b9-8c48-ac9888f6786b'
+      mantle: '266e97a3-6b1b-45b9-8c48-ac9888f6786b',
     },
     customChains: [
       {

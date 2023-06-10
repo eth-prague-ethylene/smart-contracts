@@ -15,12 +15,12 @@ let contractOwner: SignerWithAddress;
 let USDC_WHALE: SignerWithAddress;
 let Ethylene: Ethylene;
 
-const DEFAULT_CURRENCY = '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'; //USDC GOERLI
+const DEFAULT_CURRENCY = '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889'; //wmatic mumbai
 const DEFAULT_LIVENESS = 60;
 const CLAIM = 'Hello World';
 const LENS_ID = '18ad653a-af18-4be5-9246-06be8dcaf3f9';
 const OPTIMISTIC_ORACLE_V3_ADDRESS =
-  '0x9923D42eF695B5dd9911D05Ac944d4cAca3c4EAB'; // GOERLI
+  '0xAfAE2dD69F115ec26DFbE2fa5a8642D94D7Cd37E'; // MUMBAI
 
 function stringToBytes(input: string): Uint8Array {
   const encoder = new TextEncoder();
@@ -42,9 +42,9 @@ describe('Initialization of core functions', function () {
       OPTIMISTIC_ORACLE_V3_ADDRESS,
     ])) as Ethylene;
 
-    USDC_WHALE = await ethers.getImpersonatedSigner(
-      '0x03939E53DD4627F9780550F4FEDAc5715Ae52F99'
-    );
+    // USDC_WHALE = await ethers.getImpersonatedSigner(
+    //   '0x03939E53DD4627F9780550F4FEDAc5715Ae52F99'
+    // );
   });
 
   describe('Ethylene Contract', function () {
@@ -65,6 +65,7 @@ describe('Initialization of core functions', function () {
       it('should be able to assert to oracle', async function () {
         const claimBytes = stringToBytes(CLAIM);
         const lensIdBytes = stringToBytes(LENS_ID);
+        await Ethylene.assertToOracle(claimBytes, lensIdBytes);
         await expect(Ethylene.assertToOracle(claimBytes, lensIdBytes)).to.be
           .fulfilled;
       });
