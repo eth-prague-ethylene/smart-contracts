@@ -12,10 +12,10 @@ const { expect } = chai;
 chai.use(chaiAsPromised);
 let user: SignerWithAddress;
 let contractOwner: SignerWithAddress;
-let random: SignerWithAddress;
+let USDC_WHALE: SignerWithAddress;
 let Ethylene: Ethylene;
 
-const DEFAULT_CURRENCY = '0x07865c6e87b9f70255377e024ace6630c1eaa37f'; //USDC GOERLI
+const DEFAULT_CURRENCY = '0x07865c6E87B9F70255377e024ace6630C1Eaa37F'; //USDC GOERLI
 const DEFAULT_LIVENESS = 60;
 const CLAIM = 'Hello World';
 const LENS_ID = '18ad653a-af18-4be5-9246-06be8dcaf3f9';
@@ -41,6 +41,10 @@ describe('Initialization of core functions', function () {
       DEFAULT_LIVENESS,
       OPTIMISTIC_ORACLE_V3_ADDRESS,
     ])) as Ethylene;
+
+    USDC_WHALE = await ethers.getImpersonatedSigner(
+      '0x03939E53DD4627F9780550F4FEDAc5715Ae52F99'
+    );
   });
 
   describe('Ethylene Contract', function () {
@@ -50,7 +54,7 @@ describe('Initialization of core functions', function () {
       });
       it('should have proper default currency address', async function () {
         expect((await Ethylene.defaultCurrency()).toLowerCase()).to.equal(
-          DEFAULT_CURRENCY
+          DEFAULT_CURRENCY.toLowerCase()
         );
       });
       it('should have proper default liveness', async function () {
@@ -67,6 +71,7 @@ describe('Initialization of core functions', function () {
       it('should be able to get assertion data', async function () {
         const claimBytes = stringToBytes(CLAIM);
         const lensIdBytes = stringToBytes(LENS_ID);
+        await Ethylene.assertToOracle(claimBytes, lensIdBytes);
         await expect(Ethylene.assertToOracle(claimBytes, lensIdBytes)).to.be
           .fulfilled;
 

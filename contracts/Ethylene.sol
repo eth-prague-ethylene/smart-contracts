@@ -41,13 +41,13 @@ contract Ethylene is Ownable {
         bytes calldata _lensPostId
     ) public {
         bytes32 assertionId = _oov3.assertTruth(
-            createFinalClaim(_claim, _lensPostId),
+            createFinalClaimAssembly(_claim, _lensPostId),
             address(this), // asserter
             address(0), // callbackRecipient
             address(0), // escalationManager
             defaultLiveness,
             defaultCurrency,
-            0, // TODO: CHANGE LATER
+            _oov3.getMinimumBond(address(defaultCurrency)),
             _defaultIdentifier,
             bytes32(0) // domainId
         );
@@ -125,30 +125,6 @@ contract Ethylene is Ownable {
     // ========================================
     //     HELPER FUNCTIONS
     // ========================================
-
-    function createFinalClaim(
-        bytes calldata claim,
-        bytes calldata lensPostId
-    ) private pure returns (bytes memory) {
-        bytes memory mergedBytes = new bytes(claim.length + lensPostId.length);
-        uint256 i;
-
-        for (i = 0; i < claim.length; ) {
-            mergedBytes[i] = claim[i];
-            unchecked {
-                ++i;
-            }
-        }
-
-        for (uint256 j = 0; j < lensPostId.length; ) {
-            mergedBytes[i + j] = lensPostId[j];
-            unchecked {
-                ++j;
-            }
-        }
-
-        return mergedBytes;
-    }
 
     function createFinalClaimAssembly(
         bytes memory claim,
