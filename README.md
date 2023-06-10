@@ -1,33 +1,37 @@
-# Sample Hardhat Project
+# Ethylene smart contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project allows our frontend dapp to connect with UMA protocol. It comes with a contract, a test for that contract, and a script that deploys that contract. Next to that there is a second contract which extends the OptimisticOracleV3Interface from UMA.
 
-Try running some of the following tasks:
+
+
+Try running some of the following tasks to compile, test and deploy the contracts:
 
 ```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+npx hardhat compile
+pnx hardhat test
+npx hardhat run scripts/deploy.ts --network polygonMumbai
 ```
+
 
 
 # Deployment contracts
 Polygon Mumbai testnet: https://mumbai.polygonscan.com/address/0x7807A8d0fD161b0AB28a29b7A0Ca7d8059A1F95B#code
+> Polygon Mumbai contract is deployed with the gateway RPC
 
 Optimism mainnet: https://optimistic.etherscan.io/address/0x7364861986cbf3474acfbb7139695f9cb6ed1f1e
 
 Scroll Alpha testnet: https://blockscout.scroll.io/address/0x04b3786899D4400bBEf2f000c07CBB916a9a8E24#code
 
-Mantle testnet: https://explorer.testnet.mantle.xyz/address/0xE57bae05b7568E1b2b03104bD171ab94F54BcbFE#code
-
 Taiko testnet: https://explorer.test.taiko.xyz/address/0x8FDDf2Fe177d16C2783b1F52dc71ABbc4366977B
 
-# Tweet about Mantle deployment
-https://twitter.com/arjanjohan/status/1667578964632584196
+Mantle testnet: https://explorer.testnet.mantle.xyz/address/0xE57bae05b7568E1b2b03104bD171ab94F54BcbFE#code
+
+> [Our tweet about Mantle deployment](https://twitter.com/arjanjohan/status/1667578964632584196).
 
 # Sandboxed UMA V3 oracle:
+
+The V3 Oracle by UMA was not available on Polygon Mumbai testnet. By using [this guide](https://docs.uma.xyz/developers/optimistic-oracle-v3/sandboxed-oracle-environment) we deployed a sandboxed V3 Oracle on Mumbai to testing.
+
   Deployed Finder at 0xa7568E44Ae1f4B44279eaaC20c8F1f82b039711E
 
   Deployed Store at 0x300F22fc5659190Cd6dE4FfFe4C84f3F52C188CB
