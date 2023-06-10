@@ -4,7 +4,6 @@ pragma solidity ^0.8.16;
 
 import "@uma/core/contracts/optimistic-oracle-v3/interfaces/OptimisticOracleV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 
 contract Ethylene is Ownable {
     OptimisticOracleV3Interface private immutable _oov3;

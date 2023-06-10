@@ -65,7 +65,6 @@ describe('Initialization of core functions', function () {
       it('should be able to assert to oracle', async function () {
         const claimBytes = stringToBytes(CLAIM);
         const lensIdBytes = stringToBytes(LENS_ID);
-        await Ethylene.assertToOracle(claimBytes, lensIdBytes);
         await expect(Ethylene.assertToOracle(claimBytes, lensIdBytes)).to.be
           .fulfilled;
       });
