@@ -19,10 +19,10 @@ Scroll Alpha testnet: https://blockscout.scroll.io/address/0x123a40a856d4a009Bb7
 Mantle testnet: https://explorer.testnet.mantle.xyz/address/0xE57bae05b7568E1b2b03104bD171ab94F54BcbFE#code
 
 # Sandboxed UMA V3 oracle:
-  Deployed Finder at 0x2Cb4d741cd3481A7780B1aef42316c66b73E345f
-  Deployed Store at 0xC99b51f9210290aecA06Ee93DdEae82Da883F9cD
-  Deployed AddressWhitelist at 0xEb8210D5B51B7bBf854c6ebCee4e9F8c0E0Fe12A
-  Deployed IdentifierWhitelist at 0x9121d683240177190AA78C11ECC2D8862C93fF6F
-  Deployed MockOracleAncillary at 0xBEC7daa790E61B7e2e394ade8F4AB53FefC1D918
-  Deployed TestnetERC20 at 0xeA40314b4f2BA95e64453004363E30d7DD5444bD
-  Deployed Optimistic Oracle V3 at 0x382Eb37a27Ee60B9C43Fce24949e383A4718177B
+  Deployed Finder at 0x3bA84b53D29311b15DD499bF03a839b0f29d4411
+  Deployed Store at 0x2B423776496e3C2c6332699f890212164FAB6618
+  Deployed AddressWhitelist at 0xFBE3011A934A2B6F37e54F1559b08A556aA3F10C
+  Deployed IdentifierWhitelist at 0x049525C9b9490ae02D1cFfE9b2C65E2340169DFD
+  Deployed MockOracleAncillary at 0xAb46Cd8567cE498Fe51D4510696ecf48d63F8e79
+  Deployed TestnetERC20 at 0x63BB13DB47Bd61089c96f89Af46923bdFDc4f84D
+  Deployed Optimistic Oracle V3 at 0xC342d874b773ca2190646825712BC6d2758c7f25
