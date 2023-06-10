@@ -48,12 +48,17 @@ module.exports = {
       url: 'https://rpc.testnet.mantle.xyz',
       accounts: [process.env.PRIVATE_KEY],
     },
+    optimisticEthereum: {
+      url: 'https://mainnet.optimism.io',
+      accounts: [process.env.PRIVATE_KEY],
+    }
   },
   etherscan: {
     apiKey: {
       scroll: 'abc',
       polygonMumbai: '7V4UBHQJT1G7TIWHKFQ2VU5RMG3U8KYSCB',
       mantle: '266e97a3-6b1b-45b9-8c48-ac9888f6786b',
+      optimisticEthereum: 'FN1NSQ23ZPJ992WT9C4GNWA2RNAJDTGQX6',
     },
     customChains: [
       {
