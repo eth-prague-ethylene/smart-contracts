@@ -15,9 +15,8 @@ async function main() {
 
   const contract = await ethers.deployContract("Ethylene", ["0x7EeBF5cCe9911765C6a9478aB9251f92f30Ff4db", 200]);
 
-  await contract.waitForDeployment();
 
-  console.log("Coken address:", await contract.address);
+  console.log("Contract address:", await contract.address);
 }
 
 main()
